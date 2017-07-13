@@ -1,0 +1,225 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+
+<dom-module id="cork-pagination">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+      }
+
+      #root {
+        display: flex;
+        align-items: center;
+      }
+
+      .ellipsis {
+        display: none;
+      }
+
+      paper-icon-button {
+        color: var(--cork-color, --default-primary-color);
+      }
+      paper-icon-button[disabled] {
+         color: var(--cork-disabled-color, #ccc);
+      }
+
+      a {
+        color: var(--cork-color, --default-primary-color);
+        cursor: pointer;
+        text-align: center;
+        min-width: 20px;
+        border-radius: 20px;
+        display: inline-block;
+        padding: 4px;
+        margin: 0 3px;
+      }
+
+      a:hover {
+        background: var(--cork-background-color-light, var(--default-background-color-light, #eee));
+      }
+
+      a[selected] {
+        background: var(--cork-background-color, var(--default-background-color, #ccc));
+        color: white;
+      }
+    </style>
+
+    <div id="root">
+      <paper-icon-button disabled$="[[firstPage]]" icon="arrow-back" on-click="previous"></paper-icon-button>
+
+      <a selected$="[[firstPage]]" on-click="_selectPage">1</a>
+      <a id="startEllipsis" class="ellipsis" on-click="previousSection">...</a>
+
+      <template is="dom-repeat" items="[[pages]]">
+        <a selected$="[[item.selected]]" on-click="_selectPage">[[item.index]]</a>
+      </template>
+
+      <a id="stopEllipsis" class="ellipsis" on-click="nextSection">...</a>
+      <a id="lastPage" selected$="[[lastPage]]" on-click="_selectPage">[[lastPageIndex]]</a>
+
+      <paper-icon-button disabled$="[[lastPage]]" icon="arrow-forward" on-click="next"></paper-icon-button>
+    </div>
+
+
+  </template>
+
+  <script>
+    /**
+     * `cork-pagination`
+     * Pagination element
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class CorkPagination extends Polymer.Element {
+      static get is() { return 'cork-pagination'; }
+
+      static get properties() {
+        return {
+          itemsPerPage : {
+            type : Number,
+            value : 10
+          },
+          currentIndex : {
+            type : Number,
+            value : 1
+          },
+          totalResults : {
+            type : Number,
+            value : 1
+          },
+          numShownPages : {
+            type : Number,
+            value : 5
+          },
+          pages : {
+            type : Array,
+            value : function() {
+              return []
+            }
+          },
+          lastPageIndex: {
+            type: Number,
+            value: 1
+          },
+          firstPage : {
+            type : Boolean,
+            value : true
+          },
+          lastPage : {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      static get observers() {
+        return [
+          // Observer method name, followed by a list of dependencies, in parenthesis
+          '_onPageChanged(currentIndex, itemsPerPage, totalResults)'
+        ]
+      }
+
+      _onPageChanged() {
+        this.firstPage = false;
+        this.lastPage = false;
+
+        var pages = [];
+        this.currentPage = Math.floor(this.currentIndex / this.itemsPerPage) + 1;
+        var offset = Math.floor(this.numShownPages / 2);
+        this.lastPageIndex = Math.max(Math.floor(this.totalResults / this.itemsPerPage), 1);
+
+        var startPage = this.currentPage - offset;
+        var endPage = this.currentPage + offset;
+
+        if( startPage < 1 ) {
+          endPage = (1 - startPage) + endPage;
+        }
+        if( endPage > this.lastPageIndex ) {
+          startPage = startPage - (endPage - this.lastPageIndex);
+          endPage = this.lastPageIndex;
+        }
+        if( startPage < 1 ) startPage = 1;
+
+        this.firstPage = (this.currentPage === 1) ? true : false;
+        if( startPage === 1 ) startPage = 2;
+
+        this.lastPage = (this.currentPage === this.lastPageIndex) ? true : false;
+        if( endPage === this.lastPageIndex ) endPage = this.lastPageIndex - 1;
+
+        for( var i = startPage; i <= endPage; i++ ) {
+          pages.push({
+            index : i,
+            selected : (i === this.currentPage) ? true : false
+          });
+        }
+
+        this.$.lastPage.style.display = (this.lastPageIndex > 1) ? 'inline-block' : 'none';
+
+        this.$.startEllipsis.style.display = (startPage > 2) ? 'inline-block' : 'none'; 
+        this.$.stopEllipsis.style.display = (endPage < (this.lastPageIndex - 1)) ? 'inline-block' : 'none'; 
+
+        this.pages = pages;
+      }
+
+      previous() {
+        this._fireNav({
+          page : this.currentPage - 1,
+          startIndex : (this.currentPage - 2) * this.itemsPerPage
+        });
+      }
+
+      next() {
+        this._fireNav({
+          page : this.currentPage + 1,
+          startIndex : (this.currentPage) * this.itemsPerPage
+        });
+      }
+
+      _selectPage(e) {
+        var page = parseInt(e.currentTarget.innerHTML);
+
+        this._fireNav({
+          page : page,
+          startIndex : (page-1) * this.itemsPerPage
+        });
+      }
+
+      previousSection() {
+        var offset = Math.floor(this.numShownPages / 2) + 1;
+        var currentStartPage = this.pages[0].index;
+        var page = currentStartPage - offset;
+        
+        if( page < 1 ) page = 1;
+
+        this._fireNav({
+          page : page,
+          startIndex : (page-1) * this.itemsPerPage
+        });
+      }
+
+      nextSection() {
+        var offset = Math.floor(this.numShownPages / 2) + 1;
+        var currentStartPage = this.pages[this.pages.length-1].index;
+        var page = currentStartPage + offset;
+        
+        if( page > this.lastPageIndex ) page = this.lastPageIndex;
+
+        this._fireNav({
+          page : page,
+          startIndex : (page-1) * this.itemsPerPage
+        });
+      }
+
+      _fireNav(payload) {
+        this.dispatchEvent(new CustomEvent('nav', {detail: payload}));
+      }
+    }
+
+    window.customElements.define(CorkPagination.is, CorkPagination);
+  </script>
+</dom-module>
