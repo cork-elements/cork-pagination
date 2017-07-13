@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>cork-pagination demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../cork-pagination.html">
+
+    <custom-style>
+      <style is="custom-style" include="demo-pages-shared-styles">
+      </style>
+    </custom-style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic cork-pagination demo, 163 results</h3>
+      <demo-snippet>
+        <template>
+          <div style="text-align: center">
+            <cork-pagination total-results="163" style="--cork-color: red"></cork-pagination>
+          </div>
+        </template>
+      </demo-snippet>
+
+      <h3>534 Total Results, 9 pages shown, 15 items per page</h3>
+      <demo-snippet>
+        <template>
+          <div style="text-align: center">
+            <cork-pagination total-results="534" num-shown-pages="9" items-per-page="15" style="--cork-color: red"></cork-pagination>
+          </div>
+        </template>
+      </demo-snippet>
+
+      <h3>64 Total Results, 9 pages shown</h3>
+      <demo-snippet>
+        <template>
+          <div style="text-align: center">
+            <cork-pagination total-results="64" num-shown-pages="9" style="--cork-color: red"></cork-pagination>
+          </div>
+        </template>
+      </demo-snippet>
+
+      <h3>34 Total Results</h3>
+      <demo-snippet>
+        <template>
+          <div style="text-align: center">
+            <cork-pagination total-results="34" style="--cork-color: red"></cork-pagination>
+          </div>
+        </template>
+      </demo-snippet>
+
+      <h3>1 Total Result</h3>
+      <demo-snippet>
+        <template>
+          <div style="text-align: center">
+          <cork-pagination total-results="1" style="--cork-color: red"></cork-pagination>
+          </div>
+        </template>
+      </demo-snippet>
+
+      <h3>0 Total Results</h3>
+      <demo-snippet>
+        <template>
+          <div style="text-align: center">
+            <cork-pagination total-results="0" style="--cork-color: red"></cork-pagination>
+          </div>
+        </template>
+      </demo-snippet>
+    </div>
+
+    <script>
+      setTimeout(() => {
+        var eles = document.querySelectorAll('cork-pagination');
+        for( var i = 0; i < eles.length; i++ ) {
+          wireDemo(eles[i]);
+        }
+      }, 200);
+
+      function wireDemo(ele) {
+        ele.addEventListener('nav', (e) => {
+          ele.currentIndex = e.detail.startIndex;
+        });
+      }
+
+    </script>
+
+  </body>
+</html>
