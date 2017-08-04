@@ -45,20 +45,36 @@
         background: var(--cork-background-color, var(--default-background-color, #ccc));
         color: white;
       }
+
+      [hidden] {
+        display: none;
+      }
+
+      .text-display {
+        font-style: italic;
+      }
     </style>
 
     <div id="root">
       <paper-icon-button disabled$="[[firstPage]]" icon="arrow-back" on-click="previous"></paper-icon-button>
 
-      <a selected$="[[firstPage]]" on-click="_selectPage">1</a>
-      <a id="startEllipsis" class="ellipsis" on-click="previousSection">...</a>
+      <div style="flex:1"></div>
 
-      <template is="dom-repeat" items="[[pages]]">
-        <a selected$="[[item.selected]]" on-click="_selectPage">[[item.index]]</a>
-      </template>
+      <div hidden$="[[!textMode]]" class="text-display">[[textDisplay]]</div>
 
-      <a id="stopEllipsis" class="ellipsis" on-click="nextSection">...</a>
-      <a id="lastPage" selected$="[[lastPage]]" on-click="_selectPage">[[lastPageIndex]]</a>
+      <div hidden$="[[textMode]]">
+        <a selected$="[[firstPage]]" on-click="_selectPage">1</a>
+        <a id="startEllipsis" class="ellipsis" on-click="previousSection">...</a>
+
+        <template is="dom-repeat" items="[[pages]]">
+          <a selected$="[[item.selected]]" on-click="_selectPage">[[item.index]]</a>
+        </template>
+
+        <a id="stopEllipsis" class="ellipsis" on-click="nextSection">...</a>
+        <a id="lastPage" selected$="[[lastPage]]" on-click="_selectPage">[[lastPageIndex]]</a>
+      </div>
+
+      <div style="flex:1"></div>
 
       <paper-icon-button disabled$="[[lastPage]]" icon="arrow-forward" on-click="next"></paper-icon-button>
     </div>
@@ -67,14 +83,7 @@
   </template>
 
   <script>
-    /**
-     * `cork-pagination`
-     * Pagination element
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
+
     class CorkPagination extends Polymer.Element {
       static get is() { return 'cork-pagination'; }
 
@@ -87,6 +96,14 @@
           currentIndex : {
             type : Number,
             value : 1
+          },
+          textMode : {
+            type : Boolean,
+            value : false
+          },
+          textDisplay : {
+            type : String,
+            computed : '_computeTextDisplay(currentIndex, totalResults, itemsPerPage)'
           },
           totalResults : {
             type : Number,
@@ -122,6 +139,10 @@
           // Observer method name, followed by a list of dependencies, in parenthesis
           '_onPageChanged(currentIndex, itemsPerPage, totalResults)'
         ]
+      }
+
+      _computeTextDisplay(currentIndex, totalResults, itemsPerPage) {
+        return `Showing ${currentIndex+1} to ${currentIndex+itemsPerPage} of ${totalResults}`;
       }
 
       _onPageChanged() {
