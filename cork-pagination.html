@@ -142,7 +142,8 @@
       }
 
       _computeTextDisplay(currentIndex, totalResults, itemsPerPage) {
-        return `Showing ${currentIndex+1} to ${currentIndex+itemsPerPage} of ${totalResults}`;
+        var to = (currentIndex+itemsPerPage < totalResults) ? (currentIndex+itemsPerPage) : totalResults;
+        return `Showing ${currentIndex+1} to ${to} of ${totalResults}`;
       }
 
       _onPageChanged() {
