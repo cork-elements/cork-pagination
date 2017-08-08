@@ -153,7 +153,7 @@
         var pages = [];
         this.currentPage = Math.floor(this.currentIndex / this.itemsPerPage) + 1;
         var offset = Math.floor(this.numShownPages / 2);
-        this.lastPageIndex = Math.max(Math.floor(this.totalResults / this.itemsPerPage), 1);
+        this.lastPageIndex = Math.max(Math.ceil(this.totalResults / this.itemsPerPage), 1);
 
         var startPage = this.currentPage - offset;
         var endPage = this.currentPage + offset;
