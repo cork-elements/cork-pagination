@@ -23,7 +23,7 @@
         color: var(--cork-color, --default-primary-color);
       }
       paper-icon-button[disabled] {
-         color: var(--cork-disabled-color, #ccc);
+         color: var(--cork-disabled-color, var(--disabled-color, #ccc));
       }
 
       a {
@@ -40,11 +40,11 @@
       }
 
       a:hover {
-        background: var(--cork-background-color-light, var(--default-background-color-light, #eee));
+        background: var(--cork-background-color-light, var(--light-background-color, #eee));
       }
 
       a[selected] {
-        background: var(--cork-background-color, var(--default-background-color, #ccc));
+        background: var(--cork-background-color, var(--medium-background-color, #ccc));
         color: white;
       }
 
