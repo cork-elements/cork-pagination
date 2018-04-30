@@ -14,6 +14,8 @@
 
   paper-icon-button {
     color: var(--cork-color, --default-primary-color);
+    border: 2px solid transparent;
+    border-radius: 20px;
   }
   paper-icon-button[disabled] {
      color: var(--cork-disabled-color, var(--disabled-color, #ccc));
@@ -30,6 +32,7 @@
     margin: 0 3px;
     font-size: 14px;
     line-height: 20px;
+    border: 2px solid transparent;
   }
 
   a:hover {
@@ -39,6 +42,11 @@
   a[selected] {
     background: var(--cork-background-color, var(--medium-background-color, #ccc));
     color: white;
+  }
+
+  a:focus, paper-icon-button:focus {
+    outline: none;
+    border : 2px dotted var(--default-secondary-color);
   }
 
   [hidden] {
@@ -51,7 +59,7 @@
 </style>
 
 <div id="root">
-  <paper-icon-button disabled$="[[firstPage]]" icon="arrow-back" on-click="previous"></paper-icon-button>
+  <paper-icon-button tabindex="0" disabled$="[[firstPage]]" icon="arrow-back" on-click="previous"></paper-icon-button>
 
   <div style="flex:1"></div>
 
@@ -60,18 +68,18 @@
   </div>
 
   <div hidden$="[[textMode]]">
-    <a selected$="[[firstPage]]" on-click="_selectPage">1</a>
-    <a id="startEllipsis" class="ellipsis" on-click="previousSection">...</a>
+    <a selected$="[[firstPage]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">1</a>
+    <a id="startEllipsis" class="ellipsis" tabindex="0" on-click="previousSection" on-keyup="_selectPage">...</a>
 
     <template is="dom-repeat" items="[[pages]]">
-      <a selected$="[[item.selected]]" on-click="_selectPage">[[item.index]]</a>
+      <a selected$="[[item.selected]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">[[item.index]]</a>
     </template>
 
-    <a id="stopEllipsis" class="ellipsis" on-click="nextSection">...</a>
-    <a id="lastPage" selected$="[[lastPage]]" on-click="_selectPage">[[lastPageIndex]]</a>
+    <a id="stopEllipsis" class="ellipsis" tabindex="0" on-click="nextSection" on-keyup="_selectPage">...</a>
+    <a id="lastPage" selected$="[[lastPage]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">[[lastPageIndex]]</a>
   </div>
 
   <div style="flex:1"></div>
 
-  <paper-icon-button disabled$="[[lastPage]]" icon="arrow-forward" on-click="next"></paper-icon-button>
+  <paper-icon-button disabled$="[[lastPage]]" tabindex="0" icon="arrow-forward" on-click="next"></paper-icon-button>
 </div>

@@ -133,6 +133,7 @@ export default class CorkPagination extends PolymerElement {
   }
 
   _selectPage(e) {
+    if( e.type === 'keyup' && e.which !== 13 ) return;
     var page = parseInt(e.currentTarget.innerHTML);
 
     this._fireNav({
