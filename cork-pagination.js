@@ -1,4 +1,4 @@
-import {Element as PolymerElement} from "@polymer/polymer/polymer-element"
+import {PolymerElement} from "@polymer/polymer/polymer-element"
 import "@polymer/paper-icon-button/paper-icon-button"
 import "@polymer/iron-icons/iron-icons"
 import template from "./cork-pagination.html"
