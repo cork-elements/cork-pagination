@@ -1,6 +1,6 @@
 {
   "name": "@ucd-lib/cork-pagination",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Pagination element",
   "main": "cork-pagination.js",
   "directories": {
