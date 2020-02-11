@@ -56,6 +56,23 @@
   .text-display {
     font-style: italic;
   }
+
+  .xsm-lastpage {
+    display: none;
+  }
+
+  @media (max-width: 500px) {
+    .ellipsis, .single:not([selected]) {
+      display: none !important;
+    }
+    .xsm-lastpage {
+      display: inline;
+    }
+    a[selected] {
+      color: var(--default-text-color, 'black');
+      background: transparent;
+    }
+  }
 </style>
 
 <div id="root">
@@ -68,15 +85,21 @@
   </div>
 
   <div hidden$="[[textMode]]">
-    <a selected$="[[firstPage]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">1</a>
+    <a selected$="[[firstPage]]" class="single" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">
+      1<span class="xsm-lastpage"> / [[lastPageIndex]]</span>
+    </a>
     <a id="startEllipsis" class="ellipsis" tabindex="0" on-click="previousSection" on-keyup="_selectPage">...</a>
 
     <template is="dom-repeat" items="[[pages]]">
-      <a selected$="[[item.selected]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">[[item.index]]</a>
+      <a class="single" selected$="[[item.selected]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">
+        [[item.index]]<span class="xsm-lastpage"> / [[lastPageIndex]]</span>
+      </a>
     </template>
 
     <a id="stopEllipsis" class="ellipsis" tabindex="0" on-click="nextSection" on-keyup="_selectPage">...</a>
-    <a id="lastPage" selected$="[[lastPage]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">[[lastPageIndex]]</a>
+    <a id="lastPage" class="single" selected$="[[lastPage]]" tabindex="0" on-click="_selectPage" on-keyup="_selectPage">
+      [[lastPageIndex]]<span class="xsm-lastpage"> / [[lastPageIndex]]</span>
+    </a>
   </div>
 
   <div style="flex:1"></div>
